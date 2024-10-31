@@ -42,29 +42,25 @@ class SelectToUiSelect implements ModifierInterface
      */
     public function modifyMeta(array $meta): array
     {
-        $componentConfigPaths = $this->arrayManager->findPaths(
-            'config',
-            $meta,
-        );
+        $componentConfigPaths = $this->arrayManager->findPaths('config', $meta);
 
         foreach ($componentConfigPaths as $componentConfigPath) {
-            $attributeCode = null;
             $componentConfig = $this->arrayManager->get($componentConfigPath, $meta);
 
-            if (!$componentConfig || !$this->shouldProcessComponent($componentConfig, $componentConfigPath)) {
+            if (!$componentConfig || !$this->shouldProcessComponent($componentConfig)) {
                 continue;
             }
 
             $isMultiple = $componentConfig['formElement'] === MultiSelect::NAME;
 
             if ($isMultiple) {
-                $attributeCode = $this->recordMultiSelectAttribute($componentConfigPath);
+                $this->recordMultiSelectAttribute($componentConfigPath);
             }
 
             $meta = $this->arrayManager->merge(
                 $componentConfigPath,
                 $meta,
-                $this->getUiSelectConfig($isMultiple, $attributeCode)
+                $this->getUiSelectConfig($isMultiple)
             );
         }
 
@@ -119,11 +115,8 @@ class SelectToUiSelect implements ModifierInterface
     /**
      * @return array[]
      */
-    private function getUiSelectConfig(
-        bool $isMultiple,
-        ?string $attributeCode = null
-    ): array {
-        $uiSelectComponent = [
+    private function getUiSelectConfig(bool $isMultiple): array {
+        return [
             'component' => 'Aimes_ImprovedAdminUi/js/form/element/ui-select',
             'componentType' => Field::NAME,
             'dataType' => 'text',
@@ -135,26 +128,18 @@ class SelectToUiSelect implements ModifierInterface
             'levelsVisibility' => '1',
             'elementTmpl' => 'ui/grid/filters/elements/ui-select',
         ];
-
-        if ($attributeCode) {
-            $uiSelectComponent['dataScope'] = $attributeCode;
-        }
-
-        return $uiSelectComponent;
     }
 
     /**
      * @param string $componentConfigPath
-     * @return string
+     * @return void
      */
-    private function recordMultiSelectAttribute(string $componentConfigPath): string
+    private function recordMultiSelectAttribute(string $componentConfigPath): void
     {
         $componentPath = $this->arrayManager->slicePath($componentConfigPath, 0, -3);
         $finalDelimiterPosition = strrpos($componentPath, '/');
         $attributeCode = substr($componentPath, $finalDelimiterPosition + 1);
 
         $this->multiSelectAttributes[] = $attributeCode;
-
-        return $attributeCode;
     }
 }
