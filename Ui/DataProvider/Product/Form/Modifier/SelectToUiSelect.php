@@ -120,12 +120,9 @@ class SelectToUiSelect implements ModifierInterface
             'component' => 'Aimes_ImprovedAdminUi/js/form/element/ui-select',
             'componentType' => Field::NAME,
             'dataType' => 'text',
-            'filterOptions' => true,
             'filterPlaceholder' => __('Search...'),
             'missingValuePlaceholder' => __('Selected value/identifier "%s" doesn\'t exist'),
             'multiple' => $isMultiple,
-            'disableLabel' => true,
-            'levelsVisibility' => '1',
             'elementTmpl' => 'ui/grid/filters/elements/ui-select',
         ];
     }

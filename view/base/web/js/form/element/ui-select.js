@@ -29,7 +29,9 @@ define([
                     chipsEnabled: true,
                     closeBtn: true,
                 },
-            }
+            },
+            disableLabel: true,
+            filterOptions: true,
         },
 
         /**
